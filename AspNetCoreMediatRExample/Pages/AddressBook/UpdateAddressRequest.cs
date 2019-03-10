@@ -1,28 +1,16 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using MediatR;
+﻿namespace AspNetCoreMediatRExample.Pages.AddressBook {
+   public class UpdateAddressRequest : AddressRequestBase<AddressBookEntry> {
 
-namespace AspNetCoreMediatRExample.Pages.AddressBook
-{
-    public class UpdateAddressRequest
-        : IRequest
-    {
-        public string Id { get; set; }
+      public static UpdateAddressRequest Create(AddressBookEntry addressBookEntry) {
+         return new UpdateAddressRequest {
+                                            Id         = addressBookEntry.Id.ToString(),
+                                            Line1      = addressBookEntry.Line1,
+                                            Line2      = addressBookEntry.Line2,
+                                            City       = addressBookEntry.City,
+                                            State      = addressBookEntry.State,
+                                            PostalCode = addressBookEntry.PostalCode
+                                         };
+      }
 
-        [Required(ErrorMessage = "Address line 1 is required.")]
-        [DisplayName("Address Line 1")]
-        public string Line1 { get; set; }
-
-        [DisplayName("Address Line 2")] public string Line2 { get; set; }
-
-        [Required(ErrorMessage = "City is required.")]
-        public string City { get; set; }
-
-        [Required(ErrorMessage = "State is required.")]
-        public string State { get; set; }
-
-        [DisplayName("Postal Code")]
-        [Required(ErrorMessage = "Postal code is required.")]
-        public string PostalCode { get; set; }
-    }
+   }
 }
