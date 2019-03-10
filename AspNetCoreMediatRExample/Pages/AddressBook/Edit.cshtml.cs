@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -9,16 +9,35 @@ namespace AspNetCoreMediatRExample.Pages.AddressBook
 {
     public class EditModel : PageModel
     {
-        [BindProperty] public UpdateAddressRequest UpdateAddressRequest { get; set; }
-
-        public void OnGet(string id)
+        public EditModel(IMediator mediator)
         {
-            // Todo: Get address book entry, set UpdateAddressRequest fields
+            _mediator = mediator;
         }
 
-        public void OnPost()
-        {
-            // Todo: "Persist" updated address book entry
+        private readonly IMediator _mediator;
+
+        [BindProperty] public UpdateAddressRequest UpdateAddressRequest { get; set; }
+
+        public async Task<ActionResult> OnGet(string id) {
+            GetAddressRequest request          = new GetAddressRequest { Id = id };
+            AddressBookEntry  addressBookEntry = await _mediator.Send(request);
+            if (addressBookEntry.Id == Guid.Empty)
+                return NotFound();
+
+            UpdateAddressRequest = UpdateAddressRequest.Create(addressBookEntry);
+            return Page();
+        }
+
+        public async Task<ActionResult> OnPost() {
+            if (ModelState.IsValid) {
+                AddressBookEntry addressBookEntry = await _mediator.Send(UpdateAddressRequest);
+                Debug.WriteLine("");
+                Debug.WriteLine($"Updated AddressBookEntry for {addressBookEntry}");
+                Debug.WriteLine("");
+                return RedirectToPage("Index");
+            }
+
+            return Page();
         }
     }
 }
