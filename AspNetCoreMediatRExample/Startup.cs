@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreMediatRExample.Pages.AddressBook;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,8 +44,11 @@ namespace AspNetCoreMediatRExample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
+                AddressDb.Addresses.Add(AddressBookEntry.Create("Add1", "Dayton", "OH", "12345"));
+                AddressDb.Addresses.Add(AddressBookEntry.Create("Add2", "Dayton", "OH", "12345"));
+                AddressDb.Addresses.Add(AddressBookEntry.Create("Add3", "Dayton", "OH", "12345"));
+         }
+         else
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
